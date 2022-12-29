@@ -247,7 +247,6 @@ BOOL filter_wndproc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam, void* edi
 //---------------------------------------------------------------------
 FILTER_DLL filter = {
 	FILTER_FLAG_ALWAYS_ACTIVE |
-	FILTER_FLAG_DISP_FILTER |
 	FILTER_FLAG_EX_INFORMATION,
 	NULL,
 	NULL,
