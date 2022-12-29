@@ -13,7 +13,6 @@
 #define EFC_DEF_FONT_HEIGHT				16
 #define EFC_DEF_FONT_WEIGHT				FW_DONTCARE
 #define EFC_DEF_ITALIC					FALSE
-#define EFC_MAX_CHAR					256
 #define EFC_EDIT_ID_TEXT				LOWORD(67130965)
 #define EFC_EDIT_ID_SCRIPT				LOWORD(67131220)
 #define EFC_INI_KEY_TEXT_FONT_NAME		"text_font_name"
@@ -52,7 +51,7 @@ HFONT g_font_text, g_font_script;
 int g_font_height_text, g_font_height_script;
 bool g_italic_text, g_italic_script;
 int g_font_weight_text, g_font_weight_script;
-char g_font_name_text[EFC_MAX_CHAR], g_font_name_script[EFC_MAX_CHAR];
+char g_font_name_text[LF_FACESIZE], g_font_name_script[LF_FACESIZE];
 
 
 
@@ -212,6 +211,8 @@ BOOL filter_wndproc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam, void* edi
 			g_font_text = ::CreateFontIndirect(&lf);
 			::SendMessage(::GetDlgItem(g_hwnd_obj, EFC_EDIT_ID_TEXT), WM_SETFONT, (WPARAM)g_font_text, MAKELPARAM(TRUE, 0));
 			g_font_height_text = lf.lfHeight;
+			g_italic_text = lf.lfItalic;
+			g_font_weight_text = lf.lfWeight;
 			::strcpy_s(g_font_name_text, lf.lfFaceName);
 
 			return 0;
@@ -229,6 +230,8 @@ BOOL filter_wndproc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam, void* edi
 			g_font_script = ::CreateFontIndirect(&lf);
 			::SendMessage(::GetDlgItem(g_hwnd_obj, EFC_EDIT_ID_SCRIPT), WM_SETFONT, (WPARAM)g_font_script, MAKELPARAM(TRUE, 0));
 			g_font_height_script = lf.lfHeight;
+			g_italic_script = lf.lfItalic;
+			g_font_weight_script = lf.lfWeight;
 			::strcpy_s(g_font_name_script, lf.lfFaceName);
 
 			return 0;
