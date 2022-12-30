@@ -1,6 +1,6 @@
 # エディットボックスフォント変更 v1.0.1
 
-![editbox_font_changer](https://user-images.githubusercontent.com/106879397/209973104-0d48cb92-a77e-4859-9207-8acd973dcb0d.png)
+![editbox_font_changer](https://user-images.githubusercontent.com/106879397/210025224-a212bf20-fb9c-4504-bb56-ff49c1f302cd.png)
 
 
 テキスト入力欄やスクリプト制御入力欄などのエディットボックスのフォントを変更するAviUtlプラグインです。
