@@ -27,7 +27,7 @@
 
 #define EFC_FILTER_NAME					"エディットボックスフォント変更"
 #define EFC_FILTER_DEVELOPER			"mimaraka"
-#define EFC_FILTER_VERSION				"v1.0.2"
+#define EFC_FILTER_VERSION				"v1.0.3"
 #define EFC_FILTER_INFO					EFC_FILTER_NAME " " EFC_FILTER_VERSION " by " EFC_FILTER_DEVELOPER
 
 
@@ -89,25 +89,30 @@ LRESULT CALLBACK wndproc_obj_hooked(HWND hwnd, UINT msg, WPARAM wparam, LPARAM l
 			is_font_changed_text = true;
 		}
 		else if (((::GetDlgCtrlID((HWND)lparam) == EFC_EDIT_ID_SCRIPT) || (::GetDlgCtrlID((HWND)lparam) >= EFC_EDIT_ID_SCRIPT_2)) && !is_font_changed_script) {
-			g_hwnd_edit_script = (HWND)lparam;
-			
-			g_font_script = ::CreateFont(
-				g_font_height_script, 0,
-				0, 0,
-				g_font_weight_script,
-				g_italic_script,
-				FALSE, FALSE,
-				DEFAULT_CHARSET,
-				OUT_DEFAULT_PRECIS,
-				CLIP_DEFAULT_PRECIS,
-				DEFAULT_QUALITY,
-				NULL,
-				g_font_name_script
-			);
+			char class_name[256] = "";
+			::GetClassNameA((HWND)lparam, class_name, 256);
 
-			::SendMessage((HWND)lparam, WM_SETFONT, (WPARAM)g_font_script, MAKELPARAM(TRUE, 0));
+			if (::strcmp(class_name, "Edit") == 0) {
+				g_hwnd_edit_script = (HWND)lparam;
 
-			is_font_changed_script = true;
+				g_font_script = ::CreateFont(
+					g_font_height_script, 0,
+					0, 0,
+					g_font_weight_script,
+					g_italic_script,
+					FALSE, FALSE,
+					DEFAULT_CHARSET,
+					OUT_DEFAULT_PRECIS,
+					CLIP_DEFAULT_PRECIS,
+					DEFAULT_QUALITY,
+					NULL,
+					g_font_name_script
+				);
+
+				::SendMessage((HWND)lparam, WM_SETFONT, (WPARAM)g_font_script, MAKELPARAM(TRUE, 0));
+
+				is_font_changed_script = true;
+			}
 		}
 		break;
 	}

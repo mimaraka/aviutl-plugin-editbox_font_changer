@@ -1,4 +1,4 @@
-# エディットボックスフォント変更 v1.0.2
+# エディットボックスフォント変更 v1.0.3
 
 ![editbox_font_changer](https://user-images.githubusercontent.com/106879397/210025224-a212bf20-fb9c-4504-bb56-ff49c1f302cd.png)
 
@@ -6,7 +6,7 @@
 テキスト入力欄やスクリプト制御入力欄などのエディットボックスのフォントを変更するAviUtlプラグインです。
 
 ## ダウンロード
-最新バージョン: **v1.0.2**  
+最新バージョン: **v1.0.3**  
 [ダウンロード](https://github.com/mimaraka/aviutl-plugin-editbox_font_changer/releases/latest)  
 
 
