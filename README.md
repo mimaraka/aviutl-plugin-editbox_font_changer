@@ -11,12 +11,12 @@
 テキスト入力欄やスクリプト制御入力欄などのエディットボックスのフォントを変更するAviUtlプラグインです。
 
 ## ダウンロード
-下のリンクから最新のバージョンをダウンロードしてください。  
+下のリンクから最新バージョンのzipファイル(`editbox_font_changer-v*.zip`)をダウンロードしてください。  
 [**ダウンロード**](https://github.com/mimaraka/aviutl-plugin-editbox_font_changer/releases/latest)  
 
 
 ## インストール
-`editbox_font_changer.auf`をAviUtlのディレクトリ直下または`plugins`フォルダに入れてください。  
+ダウンロードした`editbox_font_changer-v*.zip`を解凍し、フォルダ内にある`editbox_font_changer.auf`をAviUtlのディレクトリ直下または`plugins`フォルダに入れてください。  
 [Visual C++ 2015/2017/2019/2022 再頒布可能パッケージ (x86)](https://aka.ms/vs/17/release/vc_redist.x86.exe)をインストールしていない場合は、こちらもインストールしてください。 
 
 
