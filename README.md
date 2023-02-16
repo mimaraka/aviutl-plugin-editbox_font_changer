@@ -1,4 +1,9 @@
-# エディットボックスフォント変更 v1.0.3
+# エディットボックスフォント変更 for AviUtl
+
+![GitHub](https://img.shields.io/github/license/mimaraka/aviutl-plugin-editbox_font_changer)
+![GitHub issues](https://img.shields.io/github/issues/mimaraka/aviutl-plugin-editbox_font_changer)
+![GitHub all releases](https://img.shields.io/github/downloads/mimaraka/aviutl-plugin-editbox_font_changer/total)
+![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/mimaraka/aviutl-plugin-editbox_font_changer)
 
 ![editbox_font_changer](https://user-images.githubusercontent.com/106879397/210025224-a212bf20-fb9c-4504-bb56-ff49c1f302cd.png)
 
@@ -6,12 +11,12 @@
 テキスト入力欄やスクリプト制御入力欄などのエディットボックスのフォントを変更するAviUtlプラグインです。
 
 ## ダウンロード
-最新バージョン: **v1.0.3**  
-[ダウンロード](https://github.com/mimaraka/aviutl-plugin-editbox_font_changer/releases/latest)  
+下のリンクから最新のバージョンをダウンロードしてください。  
+[**ダウンロード**](https://github.com/mimaraka/aviutl-plugin-editbox_font_changer/releases/latest)  
 
 
 ## インストール
-`editbox_font_changer.auf`を`exedit.auf`のあるフォルダまたは`plugins`フォルダに入れてください。  
+`editbox_font_changer.auf`をAviUtlのディレクトリ直下または`plugins`フォルダに入れてください。  
 [Visual C++ 2015/2017/2019/2022 再頒布可能パッケージ (x86)](https://aka.ms/vs/17/release/vc_redist.x86.exe)をインストールしていない場合は、こちらもインストールしてください。 
 
 
