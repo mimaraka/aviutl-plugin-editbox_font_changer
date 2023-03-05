@@ -9,7 +9,8 @@
 #include <aulslib/exedit.h>
 
 
-#define EFC_DEF_FONT_NAME				"ＭＳ ゴシック"
+#define EFC_DEF_FONT_TEXT				"ＭＳ ゴシック"
+#define EFC_DEF_FONT_SCRIPT				"Consolas"
 #define EFC_DEF_FONT_HEIGHT				16
 #define EFC_DEF_FONT_WEIGHT				FW_DONTCARE
 #define EFC_DEF_ITALIC					FALSE
@@ -27,7 +28,7 @@
 
 #define EFC_FILTER_NAME					"エディットボックスフォント変更"
 #define EFC_FILTER_DEVELOPER			"mimaraka"
-#define EFC_FILTER_VERSION				"v1.0.3"
+#define EFC_FILTER_VERSION				"v1.0.4"
 #define EFC_FILTER_INFO					EFC_FILTER_NAME " " EFC_FILTER_VERSION " by " EFC_FILTER_DEVELOPER
 
 
@@ -170,13 +171,13 @@ BOOL filter_wndproc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam, void* edi
 		fp->exfunc->ini_load_str(fp,
 			EFC_INI_KEY_TEXT_FONT_NAME,
 			g_font_name_text,
-			EFC_DEF_FONT_NAME
+			EFC_DEF_FONT_TEXT
 		);
 		// フォント名(スクリプト制御)
 		fp->exfunc->ini_load_str(fp,
 			EFC_INI_KEY_SCRIPT_FONT_NAME,
 			g_font_name_script,
-			EFC_DEF_FONT_NAME
+			EFC_DEF_FONT_SCRIPT
 		);
 
 		cf.lStructSize = sizeof(CHOOSEFONT);
