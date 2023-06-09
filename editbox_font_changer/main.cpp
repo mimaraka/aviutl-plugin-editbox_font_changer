@@ -5,8 +5,10 @@
 //----------------------------------------------------------------------------------
 
 #include <windows.h>
-#include <aviutl_plugin_sdk/filter.h>
-#include <aulslib/exedit.h>
+#include <aviutl.hpp>
+#include <mkaul/include/mkaul.hpp>
+
+#pragma comment(lib, "C:/aviutl_libs/mkaul/mkaul.lib")
 
 
 #define EFC_DEF_FONT_TEXT				"ＭＳ ゴシック"
@@ -36,7 +38,7 @@
 // チェックボックスの数
 #define	EFC_CHECK_NUM					2
 // チェックボックスの名前
-TCHAR* check_name[] = {
+const char* check_name[] = {
 	"フォント選択(テキスト)",
 	"フォント選択(スクリプト制御)"
 };
@@ -46,9 +48,6 @@ int	check_default[] = {
 };
 
 WNDPROC wndproc_obj_orig;
-WNDPROC wndproc_exedit_orig;
-HWND g_hwnd_exedit;
-HWND g_hwnd_obj;
 HWND g_hwnd_edit_text;
 HWND g_hwnd_edit_script;
 HFONT g_font_text, g_font_script;
@@ -56,18 +55,19 @@ int g_font_height_text, g_font_height_script;
 bool g_italic_text, g_italic_script;
 int g_font_weight_text, g_font_weight_script;
 char g_font_name_text[LF_FACESIZE], g_font_name_script[LF_FACESIZE];
+mkaul::exedit::Internal g_exedit_internal;
 
 
 
 //---------------------------------------------------------------------
 //		ウィンドウプロシージャ(オブジェクト設定ウィンドウ)
 //---------------------------------------------------------------------
-LRESULT CALLBACK wndproc_obj_hooked(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+LRESULT CALLBACK wndproc_objdialog_hooked(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
 {
 	static bool is_font_changed_text = false;
 	static bool is_font_changed_script = false;
 
-	switch (msg) {
+	switch (message) {
 	case WM_CTLCOLOREDIT:
 		if (::GetDlgCtrlID((HWND)lparam) == EFC_EDIT_ID_TEXT && !is_font_changed_text) {
 			g_hwnd_edit_text = (HWND)lparam;
@@ -118,7 +118,7 @@ LRESULT CALLBACK wndproc_obj_hooked(HWND hwnd, UINT msg, WPARAM wparam, LPARAM l
 		break;
 	}
 
-	return ::CallWindowProc(wndproc_obj_orig, hwnd, msg, wparam, lparam);
+	return g_exedit_internal.get_wndproc_objdialog()(hwnd, message, wparam, lparam);
 }
 
 
@@ -126,14 +126,14 @@ LRESULT CALLBACK wndproc_obj_hooked(HWND hwnd, UINT msg, WPARAM wparam, LPARAM l
 //---------------------------------------------------------------------
 //		ウィンドウプロシージャ
 //---------------------------------------------------------------------
-BOOL filter_wndproc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam, void* editp, FILTER* fp)
+BOOL filter_wndproc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam, AviUtl::EditHandle* editp, AviUtl::FilterPlugin* fp)
 {
 	static CHOOSEFONT cf;
 	static LOGFONT lf;
 	static bool init = true;
 
-	switch (msg) {
-	case WM_FILTER_INIT:
+	switch (message) {
+	case AviUtl::FilterPlugin::WindowMessage::Init:
 		// フォントの高さ(テキスト)
 		g_font_height_text = fp->exfunc->ini_load_int(fp,
 			EFC_INI_KEY_TEXT_FONT_HEIGHT,
@@ -186,19 +186,7 @@ BOOL filter_wndproc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam, void* edi
 		cf.Flags = CF_INITTOLOGFONTSTRUCT | CF_SCREENFONTS;
 		return 0;
 
-	case WM_FILTER_CHANGE_WINDOW:
-		if (init) {
-			g_hwnd_exedit = auls::Exedit_GetWindow(fp);
-			g_hwnd_obj = auls::ObjDlg_GetWindow(g_hwnd_exedit);
-
-			wndproc_obj_orig = (WNDPROC)::GetWindowLong(g_hwnd_obj, GWL_WNDPROC);
-			::SetWindowLong(g_hwnd_obj, GWL_WNDPROC, (LONG)wndproc_obj_hooked);
-
-			init = false;
-		}
-		return 0;
-
-	case WM_FILTER_EXIT:
+	case AviUtl::FilterPlugin::WindowMessage::Exit:
 		fp->exfunc->ini_save_int(fp, EFC_INI_KEY_TEXT_FONT_HEIGHT, g_font_height_text);
 		fp->exfunc->ini_save_str(fp, EFC_INI_KEY_TEXT_FONT_NAME, g_font_name_text);
 		fp->exfunc->ini_save_int(fp, EFC_INI_KEY_TEXT_ITALIC, g_italic_text);
@@ -213,7 +201,7 @@ BOOL filter_wndproc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam, void* edi
 	case WM_COMMAND:
 		switch (wparam) {
 			// テキスト
-		case MID_FILTER_BUTTON:
+		case 0x2EE4:
 			lf.lfHeight = g_font_height_text;
 			::strcpy_s(lf.lfFaceName, g_font_name_text);
 			lf.lfWeight = g_font_weight_text;
@@ -232,7 +220,7 @@ BOOL filter_wndproc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam, void* edi
 			return 0;
 
 			// スクリプト制御
-		case MID_FILTER_BUTTON + 1:
+		case 0x2EE5:
 			lf.lfHeight = g_font_height_script;
 			::strcpy_s(lf.lfFaceName, g_font_name_script);
 			lf.lfWeight = g_font_weight_script;
@@ -256,43 +244,37 @@ BOOL filter_wndproc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam, void* edi
 
 
 
-//---------------------------------------------------------------------
-//		FILTER構造体を定義
-//---------------------------------------------------------------------
-FILTER_DLL filter = {
-	FILTER_FLAG_ALWAYS_ACTIVE |
-	FILTER_FLAG_EX_INFORMATION,
-	NULL,
-	NULL,
-	EFC_FILTER_NAME,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	EFC_CHECK_NUM,
-	check_name,
-	check_default,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	filter_wndproc,
-	NULL,NULL,
-	NULL,
-	NULL,
-	EFC_FILTER_INFO,
-	NULL,NULL,
-	NULL,NULL,NULL,NULL,
-	NULL,
-};
+BOOL func_init(AviUtl::FilterPlugin* fp)
+{
+	if (!g_exedit_internal.init(fp)) {
+		::MessageBox(NULL, "拡張編集(ver.0.92)が見つからないか、バージョンが異なります。", EFC_FILTER_NAME, MB_TOPMOST | MB_ICONERROR);
+		return FALSE;
+	}
+
+	// オブジェクト設定ダイアログのフック
+	mkaul::replace_var(g_exedit_internal.base_address() + 0x2e804, &wndproc_objdialog_hooked);
+
+	return TRUE;
+}
 
 
 
 //---------------------------------------------------------------------
 //		FILTER構造体のポインタを取得
 //---------------------------------------------------------------------
-EXTERN_C FILTER_DLL __declspec(dllexport)* __stdcall GetFilterTable(void)
+auto __stdcall GetFilterTable()
 {
+	using Flag = AviUtl::FilterPluginDLL::Flag;
+	static AviUtl::FilterPluginDLL filter = {
+		.flag = Flag::AlwaysActive
+				| Flag::ExInformation,
+		.name = EFC_FILTER_NAME,
+		.check_n = EFC_CHECK_NUM,
+		.check_name = check_name,
+		.check_default = check_default,
+		.func_init = func_init,
+		.func_WndProc = filter_wndproc,
+		.information = EFC_FILTER_INFO
+	};
 	return &filter;
 }
